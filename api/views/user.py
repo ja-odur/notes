@@ -1,7 +1,7 @@
 from flask_restplus import Resource
 from flask import request
 from main import rest_api
-from ..models.user import UserDb, User
+from ..models.user import User
 from ..utils.token_generator import generate_token
 from ..utils.exceptions import ValidationError
 
@@ -38,6 +38,7 @@ class UserResource(Resource):
 
         )
 
+
 @rest_api.route('/user/login')
 class UserLoginResource(Resource):
 
@@ -45,13 +46,13 @@ class UserLoginResource(Resource):
 
         request_data = request.get_json()
 
-        user = UserDb.get(request_data['name'])
+        user = User.find_first(dict(email=request_data.get('email')))
 
-        if user and request_data['password'] == user['password']:
+        if user and user.verify_password(str(request_data.get('password'))):
             return (
                 {
                     'status': 'success',
-                    'token': generate_token(user)
+                    'token': user.token
                 }, 200
 
             )
