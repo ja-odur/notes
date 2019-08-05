@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_restplus import Api
 from api import api_blueprint
+from api.utils.exceptions import ValidationError
 
 rest_api = Api(api_blueprint, doc=False)
 
@@ -19,3 +20,10 @@ def create_app():
 
 
     return app
+
+
+@rest_api.errorhandler(ValidationError)
+def handle_exception(error):
+    """Error handler called when a ValidationError is raised"""
+
+    return jsonify(error.error), 400
