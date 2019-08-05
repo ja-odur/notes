@@ -10,14 +10,17 @@ from mongoengine.errors import ValidationError as MongoValidationError
 
 rest_api = Api(api_blueprint, doc=False)
 
-def create_app():
+
+def create_app(config='production'):
     """creates a flask app object from a config object"""
 
     app = Flask(__name__)
+    app.config.from_object(config_dict[config])
     CORS(app)
     db.init_app(app)
 
     app.register_blueprint(api_blueprint)
+    app.register_blueprint(error_blueprint)
 
     # import views
     import api.views
