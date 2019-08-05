@@ -1,8 +1,9 @@
 from flask_restplus import Resource
 from flask import request
 from main import rest_api
-from ..models.user import UserDb
+from ..models.user import UserDb, User
 from ..utils.token_generator import generate_token
+from ..utils.exceptions import ValidationError
 
 
 @rest_api.route('/user')
@@ -10,31 +11,32 @@ class UserResource(Resource):
 
     def post(self):
 
-        request_data = request.get_json()
+        user_request_data = request.get_json()
 
-        user = UserDb.insert(request_data)
-
-        if user:
+        if User.find_first(dict(email=user_request_data['email'])):
             return (
 
                 {
-                    'status': 'success',
-                    'message': 'user created',
-                    'data': user
-                }, 201
+                    'status': 'error',
+                    'message': f'user with {user_request_data["email"]} already exists',
+
+                }, 400
 
             )
+
+        user_request_data.update(dict(password=User.generate_hash(str(user_request_data['password']))))
+
+        user = User(**user_request_data).save()
 
         return (
 
             {
-                'status': 'error',
-                'message': 'user not created',
-
-            }, 200
+                'status': 'success',
+                'message': 'user created',
+                'data': user.serialize()
+            }, 201
 
         )
-
 
 @rest_api.route('/user/login')
 class UserLoginResource(Resource):
