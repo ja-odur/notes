@@ -8,6 +8,8 @@ flask = "*"
 flask-restplus = "*"
 python-decouple = "*"
 flask-cors = "*"
+pyjwt = "*"
+cryptography = "*"
 
 [dev-packages]
 
