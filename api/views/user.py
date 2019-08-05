@@ -2,13 +2,14 @@ from flask_restplus import Resource
 from flask import request
 from main import rest_api
 from ..models.user import User
-from ..utils.token_generator import generate_token
-from ..utils.exceptions import ValidationError
+from ..utils.request_validators import validate_request_data, validate_json_request
 
 
 @rest_api.route('/user')
 class UserResource(Resource):
 
+    @validate_json_request
+    @validate_request_data(['email', 'password', 'first_name', 'last_name'])
     def post(self):
 
         user_request_data = request.get_json()
@@ -42,6 +43,8 @@ class UserResource(Resource):
 @rest_api.route('/user/login')
 class UserLoginResource(Resource):
 
+    @validate_json_request
+    @validate_request_data(['email', 'password'])
     def post(self):
 
         request_data = request.get_json()
@@ -61,10 +64,8 @@ class UserLoginResource(Resource):
 
             {
                 'status': 'error',
-                'message': 'Invalid username or password',
+                'message': 'Invalid email or password',
 
             }, 401
 
         )
-
-
