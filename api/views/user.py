@@ -34,3 +34,33 @@ class UserResource(Resource):
 
         )
 
+@rest_api.route('/user/login')
+class UserLoginResource(Resource):
+
+    def post(self):
+
+        request_data = request.get_json()
+
+        user = UserDb.get(request_data['name'])
+        import pdb; pdb.set_trace()
+
+        if user and request_data['password'] == user['password']:
+            return (
+                {
+                    'status': 'success',
+                    'token': 12345
+                }, 200
+
+            )
+
+        return (
+
+            {
+                'status': 'error',
+                'message': 'Invalid username or password',
+
+            }, 401
+
+        )
+
+
