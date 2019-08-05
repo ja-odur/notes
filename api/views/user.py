@@ -2,6 +2,7 @@ from flask_restplus import Resource
 from flask import request
 from main import rest_api
 from ..models.user import UserDb
+from ..utils.token_generator import generate_token
 
 
 @rest_api.route('/user')
@@ -34,6 +35,7 @@ class UserResource(Resource):
 
         )
 
+
 @rest_api.route('/user/login')
 class UserLoginResource(Resource):
 
@@ -42,13 +44,12 @@ class UserLoginResource(Resource):
         request_data = request.get_json()
 
         user = UserDb.get(request_data['name'])
-        import pdb; pdb.set_trace()
 
         if user and request_data['password'] == user['password']:
             return (
                 {
                     'status': 'success',
-                    'token': 12345
+                    'token': generate_token(user)
                 }, 200
 
             )
