@@ -12,7 +12,7 @@ def token_required(func):
         token = get_token()
 
         try:
-            decoded_token = jwt.decode(
+            current_user = jwt.decode(
                 token,
                 b64decode(config('JWT_PUBLIC_KEY')).decode('utf8'),
                 algorithms=['RS256'],
@@ -22,11 +22,14 @@ def token_required(func):
                 })
         except (ValueError, TypeError, jwt.ExpiredSignatureError,
                 jwt.DecodeError, jwt.InvalidSignatureError):
-            raise ValidationError({'Invalid token'})
+            raise ValidationError({'message': 'Invalid token'})
 
-        return func(*args, **kwargs)
+        self, *args = args
+
+        return func(self, current_user, *args, **kwargs)
 
     return decorated
+
 
 def generate_token(user, exp=None):
     payload = {
@@ -53,8 +56,8 @@ def get_token(http_request=request):
     """
     token = http_request.headers.get('Authorization')
     if not token:
-        raise ValidationError({'message': 'NO_TOKEN_MSG'}, 401)
+        raise ValidationError({'message': 'No authorization token supplied'}, 401)
     elif 'bearer' not in token.lower():
-        raise ValidationError({'message': 'NO_BEARER_MSG'}, 401)
+        raise ValidationError({'message': "token does is no prefix with 'bearer'"}, 401)
     token = token.split(' ')[-1]
     return token
