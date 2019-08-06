@@ -16,11 +16,6 @@ class TestUserModel(TestCase):
 
         assert user.verify_password(test_user_data['password'])
 
-    def test_serializer(self):
-        user = User(**test_user_data).serialize()
-
-        assert user['first_name'] == test_user_data['first_name']
-
     def test_representation(self):
         user = User(**test_user_data)
 
