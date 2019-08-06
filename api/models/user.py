@@ -5,7 +5,8 @@ from .model_operations import ModelOperation
 
 
 class User(db.Document, ModelOperation):
-    email = db.EmailField(required=True, primary_key=True)
+    id = db.SequenceField(primary_key=True)
+    email = db.EmailField(required=True, unique=True)
     first_name = db.StringField(max_length=50)
     last_name = db.StringField(max_length=50)
     password = db.StringField(required=True, max_length=150)
@@ -26,7 +27,7 @@ class User(db.Document, ModelOperation):
         return generate_token(self.serialize())
 
     def serialize(self):
-        return dict(email=self.email, first_name=self.first_name, last_name=self.last_name)
+        return dict(email=self.email, first_name=self.first_name, last_name=self.last_name, id=self.id)
 
     def __repr__(self):
         return '<User: {} {}>'.format(self.first_name, self.last_name)

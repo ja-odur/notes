@@ -1,5 +1,6 @@
 from .database import db
 from .model_operations import ModelOperation
+from .user import User
 
 
 class Note(db.Document, ModelOperation):
@@ -7,7 +8,7 @@ class Note(db.Document, ModelOperation):
     title = db.StringField(required=True, max_length=80)
     email = db.EmailField(required=True)
     body = db.StringField(required=True)
-    shared = db.ListField()
+    shared = db.ListField(db.ReferenceField(User))
 
     def serialize(self):
         return dict(title=self.title, body=self.body, id=self.id)
