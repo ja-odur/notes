@@ -7,7 +7,7 @@ install:
   - pipenv install --skip-lock
 
 script:
-- pytest --cov=/api && coverage report && coveralls
+- pytest --cov=api/ && coverage report
 
 after_success:
 - coveralls

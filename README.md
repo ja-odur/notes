@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/ja-odur/notes.svg?branch=develop)](https://travis-ci.org/ja-odur/notes)
+[![Coverage Status](https://coveralls.io/repos/github/ja-odur/notes/badge.svg?branch=develop)](https://coveralls.io/github/ja-odur/notes?branch=develop)
 ## __Note__ 
 An API for creating notes. 
 
