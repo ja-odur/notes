@@ -2,6 +2,12 @@ language: python
 python:
 - '3.6.5'
 
+services:
+  - mongodb
+
+before_script:
+  - mongo noteDBtest --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
+
 install:
   - pip install pipenv
   - pipenv install --skip-lock
