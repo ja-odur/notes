@@ -44,9 +44,12 @@ def handle_exception(error):
 @error_blueprint.app_errorhandler(MongoValidationError)
 def handle_mongo_exception(error):
     """Error handler called when a ValidationError is raised"""
-    errors = {
-        key: value.message for key, value in error.errors.items()
-    }
+    try:
+        errors = {
+            key: value.message for key, value in error.errors.items()
+        }
+    except:
+        return jsonify({'message': error.message}), 400
 
     return jsonify(errors), 400
 

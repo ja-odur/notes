@@ -73,6 +73,42 @@ class SingleNoteResource(Resource):
             http_status=200
         )
 
+    @token_required
+    def patch(self, current_user, note_id):
+
+        update_request_data = request.get_json()
+
+        note = Note.filter_by_user(current_user.get('UserInfo').get('email'), id=note_id)
+
+        if not note:
+            return response_msg(
+                'error',
+                message='Note not found',
+                http_status=404
+            )
+
+        if 'shared' in update_request_data.keys():
+            update_request_data['shared'] = Note.get_users(*update_request_data.get('shared'))
+
+            if note[0].email != current_user.get('UserInfo').get('email'):
+                return response_msg(
+                    'error',
+                    message='Note authorized to edit the "shared" attribute of the note',
+                    http_status=403
+                )
+
+        note = note[0].update_note(update_request_data)
+
+        return response_msg(
+            'success',
+            message='Note updated successfully',
+            payload=note,
+            http_status=200
+        )
+
+
+
+
 
 
 
