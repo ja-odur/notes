@@ -10,6 +10,21 @@ class Note(db.Document, ModelOperation):
     body = db.StringField(required=True)
     shared = db.ListField(db.ReferenceField(User))
 
+    @classmethod
+    def filter_by_shared(cls, *emails, **keywords):
+        users = []
+        for email in emails:
+            user = User.find_first(dict(email=email))
+            users.append(user) if user else None
+
+        return cls.objects.filter(shared__in=users, **keywords).all()
+
+    @classmethod
+    def filter_by_user(cls, email, **keywords):
+        filter_dict = {'email': email}
+        filter_dict.update(keywords) if keywords else None
+        return list(cls.filter(filter_dict))  + list(cls.filter_by_shared(email, **keywords))
+
     def serialize(self):
         return dict(title=self.title, body=self.body, id=self.id)
 

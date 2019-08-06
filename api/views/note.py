@@ -1,7 +1,7 @@
 from flask_restplus import Resource
 from flask import request
 from main import rest_api
-from ..models import Note
+from ..models import Note, User
 from ..utils import validate_request_data, validate_json_request, token_required, response_msg
 
 
@@ -14,6 +14,13 @@ class NoteResource(Resource):
     def post(self, current_user):
 
         note_request_data = request.get_json()
+
+        if note_request_data.get('shared', []):
+            shared = []
+            for user_email in note_request_data.get('shared'):
+                user = User.find_first(dict(email=user_email))
+                shared.append(user) if user else None
+            note_request_data['shared'] = shared
 
         if Note.find_first(dict(title=note_request_data['title'], email=current_user.get('UserInfo').get('email'))):
             return response_msg(
@@ -34,8 +41,9 @@ class NoteResource(Resource):
 
     @token_required
     def get(self, current_user):
+
         notes = [
-            note.serialize() for note in Note.filter(dict(email=current_user.get('UserInfo').get('email')))
+            note.serialize() for note in Note.filter_by_user(current_user.get('UserInfo').get('email'))
         ]
 
         return response_msg(
@@ -50,7 +58,7 @@ class SingleNoteResource(Resource):
 
     @token_required
     def get(self, current_user, note_id):
-        note = Note.find_first(dict(id=note_id))
+        note = Note.filter_by_user(current_user.get('UserInfo').get('email'), id=note_id)
 
         if not note:
             return response_msg(
@@ -61,7 +69,7 @@ class SingleNoteResource(Resource):
 
         return response_msg(
             'success',
-            payload=note.serialize(),
+            payload=note[0].serialize(),
             http_status=200
         )
 
