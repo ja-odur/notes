@@ -12,6 +12,9 @@ pyjwt = "*"
 cryptography = "*"
 flask-mongoengine = "*"
 python-dotenv = "*"
+pytest = "*"
+pytest-cov = "*"
+coveralls = "*"
 
 [dev-packages]
 
