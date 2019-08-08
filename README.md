@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/ja-odur/notes.svg?branch=develop)](https://travis-ci.org/ja-odur/notes)
-[![Coverage Status](https://coveralls.io/repos/github/ja-odur/notes/badge.svg?branch=develop)](https://coveralls.io/github/ja-odur/notes?branch=develop)
-## __Note__ 
-An API for creating notes. 
+[![Coverage Status](https://coveralls.io/repos/github/ja-odur/notes/badge.svg?branch=develop&service=github)](https://coveralls.io/github/ja-odur/notes?branch=develop)
+## __Notes__ 
+An API for creating and sharing notes. 
 
 
 
@@ -25,7 +25,10 @@ using this command `git clone -b develop https://github.com/ja-odur/notes.git`
 * $ **`pipenv shell`**
 * $ **`pipenv install`**. That didn't work,  try **`pipenv install --skip-lock`** 
 
-
+## __Setup environment variables__
+* After installing dependencies, create a `.env file` and setup the variables described in the `.env.sample` file.
+* Load the environment variables
+* $ **`source .env`**
 
 ## __Starting the application__
 * After cloning and installing the required dependencies, run the builds and start the app using the command
