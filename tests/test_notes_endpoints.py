@@ -15,6 +15,59 @@ class TestNotesEndpoints:
         assert res.status_code == 201
         assert response['status'] == 'success'
 
+    def test_creating_note_with_missing_data_fails(self, client, init_db, auth_header, invalid_note_data):
+        res = client().post(
+            "/api/v1/note",
+            headers=auth_header,
+            content_type="application/json",
+            data=json.dumps(invalid_note_data)
+        )
+
+        response = json.loads(res.data.decode('utf-8'))
+
+        assert res.status_code == 400
+        assert response['status'] == 'error'
+
+    def test_creating_note_with_empty_data_fails(self, client, init_db, auth_header):
+        res = client().post(
+            "/api/v1/note",
+            headers=auth_header,
+            content_type="application/json",
+            data=json.dumps({})
+        )
+
+        response = json.loads(res.data.decode('utf-8'))
+
+        assert res.status_code == 400
+        assert response['status'] == 'error'
+
+    def test_creating_note_with_no_token_fails(self, client, init_db):
+        res = client().post(
+            "/api/v1/note",
+            content_type="application/json",
+            data=json.dumps({})
+        )
+
+        response = json.loads(res.data.decode('utf-8'))
+
+        assert res.status_code == 400
+        assert response['status'] == 'error'
+
+    def test_creating_note_with_token_missing_bearer_prefix_fails(self, client, init_db, invalid_auth_header):
+        header = dict(invalid_auth_header)
+        header['Authorization'].format('missing_prefix')
+        res = client().post(
+            "/api/v1/note",
+            headers=header,
+            content_type="application/json",
+            data=json.dumps({})
+        )
+
+        response = json.loads(res.data.decode('utf-8'))
+
+        assert res.status_code == 400
+        assert response['status'] == 'error'
+
     def test_creating_duplicate_note_fails(self, client, init_db, auth_header, note_data):
         res = client().post(
             "/api/v1/note",
@@ -84,7 +137,6 @@ class TestNotesEndpoints:
         )
 
         response = json.loads(res.data.decode('utf-8'))
-        print('res', response)
 
         assert res.status_code == 404
         assert response['status'] == 'error'

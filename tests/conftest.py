@@ -87,9 +87,26 @@ def note(user):
     return Note(**note)
 
 @pytest.fixture(scope='module')
+def invalid_note_data(user):
+
+    return  {
+        'body': fake.paragraph(),
+
+        'email': user.email
+    }
+
+@pytest.fixture(scope='module')
 def auth_header(user):
     return {
         'Authorization': f'bearer {user.token}',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+@pytest.fixture(scope='module')
+def invalid_auth_header(user):
+    return {
+        'Authorization': '{}',
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }

@@ -38,7 +38,7 @@ def create_app(config='production'):
 def handle_exception(error):
     """Error handler called when a ValidationError is raised"""
 
-    return jsonify(error.error), 400
+    return jsonify(error.to_dict()), 400
 
 @rest_api.errorhandler(MongoValidationError)
 @error_blueprint.app_errorhandler(MongoValidationError)
