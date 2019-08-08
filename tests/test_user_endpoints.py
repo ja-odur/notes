@@ -1,4 +1,3 @@
-from tests.test_base_case import BaseTestCase
 import json
 
 test_user_data = dict(
@@ -10,7 +9,7 @@ invalid_test_user_data = dict(
     )
 
 
-class TestUserLoginEndpointsFix:
+class TestUserLoginEndpoints:
 
     def test_signup_succeeds(self, client, init_db):
         res = client().post("/api/v1/user", content_type="application/json", data=json.dumps(test_user_data))
