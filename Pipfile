@@ -17,6 +17,7 @@ pytest-cov = "*"
 coveralls = "*"
 coverage = "*"
 flask-testing = "*"
+faker = "*"
 
 [dev-packages]
 
